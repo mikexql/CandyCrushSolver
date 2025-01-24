@@ -188,8 +188,8 @@ class CandyBoard(object):
         self.goals = ["score","jel","ing","jeling"]
         assert(goal in self.goals)
         self.goal = goal
-        self.horizontalBound = 9 #property of the game's design
-        self.verticalBound = 9
+        self.horizontalBound = 7 #property of the game's design
+        self.verticalBound = 7
         self.checks = 0
         self.maxDepth = maxDepth
         if test:
@@ -208,17 +208,17 @@ class CandyBoard(object):
         if board == None:
             board = self.boardTable
         assert(self.verifyBoard()) ## remove in production
-        print ""
+        print("")
         rowmarker = 0
         t = " |"
-        for i in xrange(len(self.boardTable[0])):
+        for i in range(len(self.boardTable[0])):
             t += str(i)+"|"
-        print t
+        print(t)
         for row in board:
             s = str(rowmarker)+"|"
             for cell in row:
                 s += (repr(cell) + "|")
-            print s
+            print (s)
             rowmarker += 1
 
     def isValidLocation(self,row,col):
@@ -228,7 +228,7 @@ class CandyBoard(object):
 
     def checkMatchInDirection(self,piece,row,col,drow,dcol,board=None):
         if board == None:
-            print "Default checkMatchInDirection..."
+            print("Default checkMatchInDirection...")
             board = self.boardTable
         assert(drow in [-1,0,1] and dcol in [-1,0,1] and (abs(drow) != abs(dcol)))
         assert(self.isValidLocation(row,col))
@@ -246,12 +246,12 @@ class CandyBoard(object):
 
     def checkMatchFromPiece(self,row,col,board=None):
         if board == None:
-            print "Default checkMatchFromPiece..."
+            print("Default checkMatchFromPiece...")
             board = self.boardTable
         assert(self.isValidLocation(row,col))
         piece = self.getPiece(row,col,board)
         if not isinstance(piece, Candy):
-            print "We're checking matches for a non-candy piece."
+            print("We're checking matches for a non-candy piece.")
             return (0,0,0,0) #no matches possible
         l = self.checkMatchInDirection(piece,row,col,0,-1,board)
         r = self.checkMatchInDirection(piece,row,col,0,1,board)
@@ -264,7 +264,7 @@ class CandyBoard(object):
         assert(self.isValidLocation(row,col))
         if count == 0: return []
         toRemove = []
-        for i in xrange(1,count+1):
+        for i in range(1,count+1):
             assert(self.isValidLocation(row+i*drow,col+i*dcol))
             toRemove += [(row+i*drow,col+i*dcol)]
         assert(len(toRemove) == count)
@@ -272,16 +272,16 @@ class CandyBoard(object):
 
     def drop(self,board=None):
         if board == None:
-            print "Default drop..."
+            print ("Default drop...")
             board = self.boardTable
         dropped = []
         dudsRemoved = 0
-        for col in xrange(self.horizontalBound):
+        for col in range(self.horizontalBound):
             if isinstance(board[self.verticalBound-1][col],Dud):
                 dudsRemoved += 1
                 jelly = board[self.verticalBound-1][col].getJellyLevel()
                 board[self.verticalBound-1][col] = Drop(jelly)
-            for row in xrange(self.verticalBound-1,0,-1):
+            for row in range(self.verticalBound-1,0,-1):
                 assert self.isValidLocation(row,col) and self.isValidLocation(row-1,col)
                 piece = self.getPiece(row,col,board)
                 upiece = self.getPiece(row-1,col,board)
@@ -305,7 +305,7 @@ class CandyBoard(object):
 
     def markToRemove(self,toRemove,board=None):
         if board == None:
-            print "Default markToRemove..."
+            print ("Default markToRemove...")
             board = self.boardTable
         piecesRemoved = 0
         jellyRemoved = 0
@@ -324,7 +324,7 @@ class CandyBoard(object):
 
     def remove(self,toRemove,color=None,board=None):
         if board == None:
-            print "Default remove..."
+            print ("Default remove...")
             board = self.boardTable
         piecesRemoved = 0
         jellyRemoved = 0
@@ -336,8 +336,8 @@ class CandyBoard(object):
             piece = self.getPiece(row,col,board)
             extra = []
             if isinstance(piece,Bomb):
-                for _row in xrange(self.verticalBound):
-                    for _col in xrange(self.horizontalBound):
+                for _row in range(self.verticalBound):
+                    for _col in range(self.horizontalBound):
                         assert self.isValidLocation(_row,_col)
                         _piece = self.getPiece(_row,_col,board)
                         if isinstance(_piece,Candy) and not isinstance(_piece,Bomb):
@@ -346,11 +346,11 @@ class CandyBoard(object):
             elif isinstance(piece,Striped):
                 d = piece.getStripeDirection()
                 if d == "h":
-                    for _col in xrange(self.horizontalBound):
+                    for _col in range(self.horizontalBound):
                         extra += [(row,_col)]
                 else:
                     assert d == "v"
-                    for _row in xrange(self.verticalBound):
+                    for _row in range(self.verticalBound):
                         extra += [(_row,col)]
             elif isinstance(piece,Wrapped):
                 for drow in [-1,0,1]:
@@ -369,7 +369,7 @@ class CandyBoard(object):
 
     def processMatches(self,matches,board=None):
         if board == None:
-            print "Default processMatches..."
+            print ("Default processMatches...")
             board = self.boardTable
         piecesRemoved = 0
         jellyRemoved = 0
@@ -460,12 +460,12 @@ class CandyBoard(object):
         #jellyRemoved = 0
         #piecesRemoved = 0
         if board == None:
-            print "Default swap..."
+            print ("Default swap...")
             board = self.boardTable
         assert(self.isValidLocation(row1,col1) and self.isValidLocation(row2,col2))
         distance = math.sqrt(float(abs(row2 - row1))**2+(float(abs(col2-col1)))**2)
         if distance != 1:
-            print "Non adjacent pieces swapped."
+            print ("Non adjacent pieces swapped.")
             return False #try to exit cleanly?
             #sys.exit()
         piece1 = self.getPiece(row1,col1,board)
@@ -495,10 +495,10 @@ class CandyBoard(object):
             #print "Two special candies swapped... not yet implemented."
             types = (str(type(piece1)),str(type(piece2)))
             if ("Stripe" in types and "Wrapper" in types):
-                print "Stripe/Wrapper"
+                print ("Stripe/Wrapper")
                 #pass # 3 wide, 3 tall sweep across board
             if (types == ("Stripe","Stripe")):
-                print "Stripe/Stripe"
+                print ("Stripe/Stripe")
             if ((isinstance(piece1,Bomb) and isinstance(piece2,Striped)) or (isinstance(piece2,Bomb) and isinstance(piece1,Striped))):
                 if isinstance(piece1,Bomb): color = piece2.getColor()
                 else: color = piece1.getColor
@@ -509,8 +509,8 @@ class CandyBoard(object):
                 removal = []
                 directions = ["h","v"]
                 i = 0
-                for row in xrange(self.verticalBound):
-                    for col in xrange(self.horizontalBound):
+                for row in range(self.verticalBound):
+                    for col in range(self.horizontalBound):
                         if (row,col) == (row1,col1) or (row,col) == (row2,col2): continue
                         piece = self.getPiece(row,col,board)
                         if isinstance(piece,Bomb): continue
@@ -527,19 +527,19 @@ class CandyBoard(object):
                     piecesRemoved += newResult[2]
                 return (dudsRemoved,jellyRemoved,piecesRemoved)
             if ("Bomb" in types and "Wrapper" in types):
-                print "Bomb/Wrapper"
+                print ("Bomb/Wrapper")
                 pass
             if (isinstance(piece1,Bomb) and isinstance(piece2,Bomb)):
-                print "Double bomb found!!!"
+                print ("Double bomb found!!!")
                 #sys.exit()
                 removal = []
-                for row in xrange(self.verticalBound):
-                    for col in xrange(self.horizontalBound):
+                for row in range(self.verticalBound):
+                    for col in range(self.horizontalBound):
                         removal += [(row,col)]
                 (toCheck,dudsRemoved,jellyRemoved,piecesRemoved) = self.remove(removal,board=board)
                 return (dudsRemoved,jellyRemoved,piecesRemoved)
             if (types == ("Wrapper","Wrapper")):
-                print "Wrapper/Wrapper"
+                print ("Wrapper/Wrapper")
         if isinstance(piece1,Bomb) or isinstance(piece2,Bomb): #elif instead?
             if isinstance(piece1,Bomb):
                 color = piece2.getColor()
@@ -565,8 +565,8 @@ class CandyBoard(object):
         s = ""
         if board == None:
             board = self.boardTable
-        for row in xrange(self.verticalBound):
-            for col in xrange(self.horizontalBound):
+        for row in range(self.verticalBound):
+            for col in range(self.horizontalBound):
                 s += str(self.getPiece(row,col,board))
         return s
 
@@ -588,8 +588,8 @@ class CandyBoard(object):
         bestMoveSequence = []
         toVisit = []
         moveSequence = copy.deepcopy(moveSequence)
-        for row in xrange(self.verticalBound):
-            for col in xrange(self.horizontalBound):
+        for row in range(self.verticalBound):
+            for col in range(self.horizontalBound):
                 if self.isValidLocation(row+1, col):
                     toVisit += [(row,col,row+1,col)]
                 if self.isValidLocation(row,col+1):
@@ -597,7 +597,8 @@ class CandyBoard(object):
         #print len(toVisit)
         tempTable = copy.deepcopy(copyTable)
         while toVisit:
-            if (depth == 1 and len(toVisit) % 2 == 0): print "="*(len(toVisit)/2)
+            if (depth == 1 and len(toVisit) % 2 == 0): 
+                print ("=" * (len(toVisit) // 2))
             (row1,col1,row2,col2) = toVisit.pop()
             check = self.swap(row1,col1,row2,col2,tempTable) #or something similar
             #if (self.checks % 100000 == 0): print "Check %d" % (self.checks)
@@ -635,13 +636,13 @@ class CandyBoard(object):
         if self.maxDepth == -1: pickle.dump( self.solveDictionary, open( "database.pkl", "wb" ) )
         self.printLines()
         if printing:
-            print "From all the information available, the best score possible is %s. (removal of (duds,jelly,pieces))." % str(maxScore)
-            print "You can do that with the following moves:"
-            print moveSequence
-            print "It took %d trials to find out that information. :)" % (self.checks)
-            print "%d percent of solve calls were found in the database!" % (100 * float(self.found) / (self.original+self.found))
+            print ("From all the information available, the best score possible is %s. (removal of (duds,jelly,pieces))." % str(maxScore))
+            print ("You can do that with the following moves:")
+            print (moveSequence)
+            print ("It took %d trials to find out that information. :)" % (self.checks))
+            print ("%d percent of solve calls were found in the database!" % (100 * float(self.found) / (self.original+self.found)))
             if self.maxDepth == -1:
-                print "We now have %d entries in our database. Thanks for the sample!" % (len(self.solveDictionary))
+                print ("We now have %d entries in our database. Thanks for the sample!" % (len(self.solveDictionary)))
         return moveSequence
 
     def getMatches(self): #blindly check everything
@@ -649,24 +650,24 @@ class CandyBoard(object):
         return [] #implement later when doing swappable pieces and stuff
 
     def verifyChunkLine(self, line):
-        if not (len(line) == 9):
-            print "Invalid line length %d in verifyChunkLine." % len(line)
+        if not (len(line) == 7):
+            print ("Invalid line length %d in verifyChunkLine." % len(line))
             return False
         for chunk in line:
             if not isinstance(chunk, Cell):
-                print "Chunk does not contain a cell in verifyChunkLine."
+                print ("Chunk does not contain a cell in verifyChunkLine.")
                 return False
         return True
 
     def verifyBoard(self,initial=False):
         #check if all input is valid
-        if not (len(self.boardTable) == 9):
-            print "Board does not have 9 rows."
+        if not (len(self.boardTable) == 7):
+            print ("Board does not have 7 rows.")
             return False
         for line in self.boardTable:
             if not self.verifyChunkLine(line):
-                print "Invalid cell line in verifyBoard:"
-                print line
+                print ("Invalid cell line in verifyBoard:")
+                print (line)
                 return False
         #if initial: return (self.getMatches() == [])
         return True
@@ -677,7 +678,7 @@ class CandyBoard(object):
         if (size == 1):
             pieceName = chunk
             if pieceName not in self.pieceNames:
-                print "Invalid candy letter: %c" % pieceName
+                print ("Invalid candy letter: %c" % pieceName)
                 return False
             elif pieceName == "m": cell = Bomb()
             elif pieceName in self.dropName: cell = Drop()
@@ -689,10 +690,10 @@ class CandyBoard(object):
             prefix = chunk[0]
             pieceName = chunk[1]
             if prefix not in self.prefixes:
-                print "Invalid prefix: %c" % prefix
+                print ("Invalid prefix: %c" % prefix)
                 return False
             if pieceName not in self.pieceNames:
-                print "Invalid piece name: %c" % pieceName
+                print ("Invalid piece name: %c" % pieceName)
                 return False
             if pieceName in self.candyNames:
                 if prefix in self.lockedName: cell = Locked(pieceName)
@@ -710,20 +711,20 @@ class CandyBoard(object):
             prefix = chunk[1]
             pieceName = chunk[2]
             if jellySize not in self.jellyNames:
-                print "Not a valid jelly size: %c" % jellySize
+                print ("Not a valid jelly size: %c" % jellySize)
                 return False
             if prefix not in self.prefixes:
-                print "Invalid prefix: %c" % prefixes
+                print ("Invalid prefix: %c" % prefix)
                 return False
             elif prefix in self.jellyNames:
-                print "You can't have two prefixes for a lock/jelly size."
+                print ("You can't have two prefixes for a lock/jelly size.")
                 return False
             if pieceName not in self.pieceNames:
-                print "Invalid piece name: %c" % pieceName
+                print ("Invalid piece name: %c" % pieceName)
                 return False
             cell = Special.getSpecial(prefix,pieceName,jellySize)
         else:
-            print "Chunk of invalid size passed to chunkToPiece."
+            print ("Chunk of invalid size passed to chunkToPiece.")
             return False
         return cell
 
@@ -735,35 +736,35 @@ class CandyBoard(object):
         while i < size:
             if line[i] in self.prefixes: #prefixes = special, jelly, locked
                 if not (i + 1 < size):
-                    print "Prefix at end of line."
+                    print ("Prefix at end of line.")
                     return False
                 if (line[i+1] in self.prefixes):
                     if not (i + 2 < size):
-                        print "Two prefixes at the end of the line."
+                        print ("Two prefixes at the end of the line.")
                         return False
                     if not (line[i+2] in self.pieceNames):
-                        print "Invalid piece \"%c\" at index %d." % (line[i+2],i+2)
+                        print ("Invalid piece \"%c\" at index %d." % (line[i+2],i+2))
                         return False
                     #print "3Passing piece %s to rawLine..." % line[i:i+2+1] ###
                     chunk = self.chunkToPiece(line[i:i+2+1])
                     i += 3
                 else:
                     if not (line[i+1] in self.pieceNames):
-                        print "Invalid piece \"%c\" at index %d." % (line[i+1],i+1)
+                        print ("Invalid piece \"%c\" at index %d." % (line[i+1],i+1))
                         return False
                     #print "2Passing piece %s to rawLine..." % line[i:i+1+1] ###
                     chunk = self.chunkToPiece(line[i:i+1+1])
                     i += 2
             else:
                 if not (line[i] in self.pieceNames):
-                    print "Invalid piece \"%c\" at index %d." % (line[i],i)
+                    print ("Invalid piece \"%c\" at index %d." % (line[i],i))
                     return False
                 #print "1Passing piece %s to rawLine..." % line[i] ###
                 chunk = self.chunkToPiece(line[i])
                 i += 1
             if not chunk: return False
             chunkLine.append(chunk)
-        assert(len(chunkLine) == 9)
+        assert(len(chunkLine) == 7)
         return chunkLine
 
     def getBoardTable(self,sample=[]):
@@ -773,28 +774,28 @@ class CandyBoard(object):
         self.boardTable = []
         i = 0
         if not sample:
-            print "Enter line ((jellyLevel/locked,)special,)piece (q to exit)."
+            print ("Enter line ((jellyLevel/locked,)special,)piece (q to exit).")
             #print "Enter anything for the candy color for a bomb."
-            print "Enter m for a bomb."
+            print ("Enter m for a bomb.")
         while (i < self.verticalBound):
-            line = sample[i] if sample else raw_input()
+            line = sample[i] if sample else input()
             if (line == "q"):
-                print "Quitting..."
+                print ("Quitting...")
                 sys.exit(0)
             chunkLine = self.rawLineToCellLine(line)
             if chunkLine:
                 self.boardTable.append(chunkLine)
                 i += 1
             elif sample: sys.exit()
-            else: print "That line was invalid. Try again."
+            else: print ("That line was invalid. Try again.")
         self.verifyBoard()
 
     def processUnknowns(self,board=None):
         if board == None:
             board = self.boardTable
         unknownPieces = []
-        for row in xrange(self.verticalBound):
-            for col in xrange(self.horizontalBound):
+        for row in range(self.verticalBound):
+            for col in range(self.horizontalBound):
                 piece = self.getPiece(row,col,board)
                 if (isinstance(piece,Empty) and piece.isUnknown) or isinstance(piece,Drop):
                     #print "Added unknown piece (%d,%d)." % (row,col)
@@ -804,14 +805,14 @@ class CandyBoard(object):
         self.printLines()
         while unknownPieces:
             (row,col) = unknownPieces.pop(0) #get from front of list
-            print "We need to know the piece at location (%d,%d). (0-7 indexed)" % (row,col)
-            newChunk = raw_input("Enter the \"piece chunk\" here:")
+            print ("We need to know the piece at location (%d,%d). (0-7 indexed)" % (row,col))
+            newChunk = input("Enter the \"piece chunk\" here:")
             if newChunk == "q":
-                print "Quitting..."
+                print("Quitting...")
                 sys.exit(0)
             piece = self.chunkToPiece(newChunk)
             if not piece:
-                print "Something went wrong. Try again."
+                print("Something went wrong. Try again.")
                 unknownPieces.insert(0,(row,col)) #put back on front of list
             else:
                 self.boardTable[row][col] = piece
@@ -825,11 +826,11 @@ class CandyBoard(object):
             self.printLines()
             moves = self.solveWrapped()
             if not moves:
-                print "Uh oh... it looks like the algorithm failed! :( Try restarting the program."
+                print("Uh oh... it looks like the algorithm failed! :( Try restarting the program.")
                 return
-            coords = raw_input("Are you ready to type in the new board? (n/q to quit)")
+            coords = input("Are you ready to type in the new board? (n/q to quit)")
             if (coords == "q" or coords == "n"):
-                print "Quitting..."
+                print ("Quitting...")
                 sys.exit(0)
             self.checks = 0
             #for move in moves:
@@ -842,26 +843,26 @@ class CandyBoard(object):
         board = self.boardTable
         while True:
             self.printLines()
-            coords = raw_input("Enter row1,col1,row2,col2 for swap or q to quit.")
+            coords = input("Enter row1,col1,row2,col2 for swap or q to quit.")
             if (coords == "q"):
-                print "Quitting..."
+                print ("Quitting...")
                 sys.exit(0)
             coordsList = coords.split(',')
             if len(coordsList) != 4:
-                print "You need to enter 4 coordinates. Try again."
+                print("You need to enter 4 coordinates. Try again.")
                 continue
-            for i in xrange(len(coordsList)):
+            for i in range(len(coordsList)):
                 coordsList[i] = int(coordsList[i])
             (row1,col1,row2,col2) = coordsList
             if not (self.isValidLocation(row1,col1) and self.isValidLocation(row2,col2)):
-                print "Invalid coordinates entered. Try again."
+                print("Invalid coordinates entered. Try again.")
                 continue
             result = self.swap(row1,col1,row2,col2)
             if not result:
-                print "Failed to swap the given coordinates. Try again."
+                print("Failed to swap the given coordinates. Try again.")
                 continue
             (duds,jelly,pieces) = result
-            print "(duds,jelly,pieces)"
+            print ("(duds,jelly,pieces)")
             print (duds,jelly,pieces)
             #self.processUnknowns(board)
 
@@ -869,7 +870,7 @@ class CandyBoard(object):
         ###search for all isUnknowns in the map, prompt for what they now are one at a time
 
     def printInstructions(self):
-        print """
+        print("""
         Type in your 9x9 board using the following rules:
         x = Empty cell that candy cannot fall into
         \" \" (space) = Empty cell that candy can fall into
@@ -891,7 +892,7 @@ class CandyBoard(object):
         1/2 = thickness of jelly in background
 
         Press enter after each line.
-        """
+        """)
 
     def runTests(self):
         sample = ["rbdgpbgrr","godyryppb","bbdyvgpror","rpdrrpbyo","brdoJyryd",
